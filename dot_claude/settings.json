@@ -1,0 +1,61 @@
+{
+  "env": {
+    "CLAUDE_CODE_DISABLE_FAST_MODE": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(gh issue list *)",
+      "Bash(gh issue status *)",
+      "Bash(gh issue view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh repo list *)",
+      "Bash(gh repo view *)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/*.key)",
+      "Read(**/*.pem)"
+    ],
+    "ask": [
+      "Bash(gh *)",
+      "Bash(git checkout *)",
+      "Bash(git clean *)",
+      "Bash(git commit *)",
+      "Bash(git merge *)",
+      "Bash(git pull *)",
+      "Bash(git push *)",
+      "Bash(git rebase *)",
+      "Bash(git reset *)",
+      "Bash(git restore *)",
+      "Bash(git switch *)"
+    ],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "jq -r '.tool_input.command' | { grep -qiE 'co-authored-by:|generated with|noreply@anthropic|🤖' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commit message contains a vanity trailer/header (Co-Authored-By, Generated with, or robot emoji). Per ~/.claude/CLAUDE.md: no vanity tags/trailers/headers. Remove it and retry.\"}}'; } || true",
+            "statusMessage": "Checking commit for vanity trailers"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": false,
+  "theme": "auto",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": false,
+  "skipAutoPermissionPrompt": true,
+  "_comment_remoteControlAtStartup": "This is a reminder. Actual setting lives in ~/.claude.json. See https://github.com/anthropics/claude-code/issues/54527",
+  "cleanupPeriodDays": 3650
+}
