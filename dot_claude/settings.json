@@ -1,35 +1,57 @@
 {
+  "cleanupPeriodDays": 3650,
   "env": {
-    "CLAUDE_CODE_DISABLE_FAST_MODE": "1"
+    "CLAUDE_CODE_DISABLE_FAST_MODE": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
   },
   "permissions": {
     "allow": [
       "Bash(gh issue list *)",
       "Bash(gh issue status *)",
       "Bash(gh issue view *)",
+      "Bash(gh pr checks *)",
       "Bash(gh pr diff *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view *)",
       "Bash(gh repo list *)",
-      "Bash(gh repo view *)"
+      "Bash(gh repo view *)",
+      "Bash(gh run download *)",
+      "Bash(gh run list *)",
+      "Bash(gh run view *)",
+      "Bash(gh workflow list *)",
+      "Bash(gh workflow view *)",
+      "Bash(glab ci artifact *)",
+      "Bash(glab ci get *)",
+      "Bash(glab ci list *)",
+      "Bash(glab ci status *)",
+      "Bash(glab ci trace *)",
+      "Bash(glab issue list *)",
+      "Bash(glab job artifact *)",
+      "Bash(glab issue view *)",
+      "Bash(glab mr diff *)",
+      "Bash(glab mr list *)",
+      "Bash(glab mr view *)",
+      "Bash(glab repo list *)",
+      "Bash(glab repo view *)"
     ],
     "deny": [
+      "Bash(git -C *)",
       "Read(**/.env)",
       "Read(**/*.key)",
-      "Read(**/*.pem)"
+      "Read(**/*.pem)",
+      "Read(**/.vault-pass)"
     ],
     "ask": [
       "Bash(gh *)",
-      "Bash(git checkout *)",
-      "Bash(git clean *)",
       "Bash(git commit *)",
-      "Bash(git merge *)",
-      "Bash(git pull *)",
       "Bash(git push *)",
-      "Bash(git rebase *)",
-      "Bash(git reset *)",
-      "Bash(git restore *)",
-      "Bash(git switch *)"
+      "Bash(glab *)"
     ],
     "defaultMode": "auto"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "hooks": {
     "PreToolUse": [
@@ -38,9 +60,13 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit*)",
-            "command": "jq -r '.tool_input.command' | { grep -qiE 'co-authored-by:|generated with|noreply@anthropic|🤖' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commit message contains a vanity trailer/header (Co-Authored-By, Generated with, or robot emoji). Per ~/.claude/CLAUDE.md: no vanity tags/trailers/headers. Remove it and retry.\"}}'; } || true",
+            "command": "cmd=$(jq -r '.tool_input.command'); { echo \"$cmd\" | grep -qiE '\\bgit( +[^ ]+)* +commit\\b' && echo \"$cmd\" | grep -qiE 'co-authored-by:|generated with|noreply@anthropic|🤖' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commit message contains a vanity trailer/header (Co-Authored-By, Generated with, or robot emoji). Per ~/.claude/CLAUDE.md: no vanity tags/trailers/headers. Remove it and retry.\"}}'; } || true",
             "statusMessage": "Checking commit for vanity trailers"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | { grep -qiE '\\bgit( +[^ ]+)* +(commit|push)\\b' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"State-changing git command detected in the command string (commit/push/pull/merge/rebase/reset/restore/checkout/switch/clean). Prefix-based ask rules miss compound or cd-led commands — confirm before running.\"}}'; } || true",
+            "statusMessage": "Checking for global state-changing git commands"
           }
         ]
       }
@@ -55,7 +81,6 @@
   "theme": "auto",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true,
-  "_comment_remoteControlAtStartup": "This is a reminder. Actual setting lives in ~/.claude.json. See https://github.com/anthropics/claude-code/issues/54527",
-  "cleanupPeriodDays": 3650
+  "skipAutoPermissionPrompt": false,
+  "_comment_remoteControlAtStartup": "This is a reminder. Actual setting lives in ~/.claude.json. See https://github.com/anthropics/claude-code/issues/54527"
 }
