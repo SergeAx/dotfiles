@@ -44,6 +44,13 @@ Unless explicitly override by target repo rules:
   working branches with `git rebase --interactive`
 - No vanity tags/trailers/headers in commit messages
 
+## Commenting
+
+- Inline comment only when necessary. Most of the time good code is
+  self-documenting
+- No obvious statements or re-statements
+- Never comment on "what", only "why"
+
 ## Using tools
 
 - Prefer Bash as a shell. On Windows it comes with Git

@@ -1,4 +1,6 @@
 {
+  "model": "claude-opus-4-8",
+  "effortLevel": "high",
   "cleanupPeriodDays": 3650,
   "env": {
     "CLAUDE_CODE_DISABLE_FAST_MODE": "1",
@@ -20,6 +22,7 @@
       "Bash(gh run view *)",
       "Bash(gh workflow list *)",
       "Bash(gh workflow view *)",
+      "Bash(glab auth status *)",
       "Bash(glab ci artifact *)",
       "Bash(glab ci get *)",
       "Bash(glab ci list *)",
@@ -35,7 +38,6 @@
       "Bash(glab repo view *)"
     ],
     "deny": [
-      "Bash(git -C *)",
       "Read(**/.env)",
       "Read(**/*.key)",
       "Read(**/*.pem)",
@@ -43,9 +45,9 @@
     ],
     "ask": [
       "Bash(gh *)",
+      "Bash(glab *)",
       "Bash(git commit *)",
-      "Bash(git push *)",
-      "Bash(glab *)"
+      "Bash(git push *)"
     ],
     "defaultMode": "auto"
   },
@@ -75,7 +77,6 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
   },
-  "effortLevel": "medium",
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": false,
   "theme": "auto",
