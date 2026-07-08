@@ -20,8 +20,9 @@ Public email: [sergeax@gmail.com](mailto:sergeax@gmail.com)
 
 ## Be compatible, adhere open standards
 
-- **Always** read and obey `AGENTS.md`, even if there's a dedicated `CLAUDE.md`
-  nearby.
+- **Always** fully read and obey `AGENTS.md`, even if there's a dedicated
+  `CLAUDE.md` nearby.
+- Prioritize user's directives over harness' defaults
 
 ## Repo history style
 
@@ -42,6 +43,7 @@ Unless explicitly override by target repo rules:
 - Be pedantic: amend commits the changes semantically belong to instead of
   creating new ones. Actively use `git commit --fixup` for that. Rewrite messy
   working branches with `git rebase --interactive`
+- Do not leave fuxup commit to hang, autosquash it immediately
 - No vanity tags/trailers/headers in commit messages
 
 ## Commenting
@@ -58,4 +60,6 @@ Unless explicitly override by target repo rules:
 - On Windows you may use WSL shell to run Windows-incompatible commands and
   scripts. Note that `C:` drive may be mounted as `/c/`, not `/mnt/c/`
 - Use `gh` and `glab` to access repositories, issues, pull/merge requests,
-  commentaries, CI pipeline logs etc
+  commentaries, CI pipeline logs etc. Prefer specific CLI commands instead
+  of generic calls like `glab api "..."`
+- Use `rg` instead of internal Find tool
