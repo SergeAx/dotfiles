@@ -1,10 +1,12 @@
 {
-  "model": "claude-opus-4-8",
-  "effortLevel": "high",
   "cleanupPeriodDays": 3650,
   "env": {
     "CLAUDE_CODE_DISABLE_FAST_MODE": "1",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "permissions": {
     "allow": [
@@ -22,17 +24,22 @@
       "Bash(gh run view *)",
       "Bash(gh workflow list *)",
       "Bash(gh workflow view *)",
+      "Bash(glab --version)",
       "Bash(glab auth status *)",
       "Bash(glab ci artifact *)",
       "Bash(glab ci get *)",
       "Bash(glab ci list *)",
+      "Bash(glab ci run *)",
       "Bash(glab ci status *)",
       "Bash(glab ci trace *)",
+      "Bash(glab ci view *)",
       "Bash(glab issue list *)",
       "Bash(glab job artifact *)",
       "Bash(glab issue view *)",
+      "Bash(glab mr create *)",
       "Bash(glab mr diff *)",
       "Bash(glab mr list *)",
+      "Bash(glab mr note *)",
       "Bash(glab mr view *)",
       "Bash(glab repo list *)",
       "Bash(glab repo view *)"
@@ -45,16 +52,11 @@
     ],
     "ask": [
       "Bash(gh *)",
-      "Bash(glab *)",
-      "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(glab *)"
     ],
     "defaultMode": "auto"
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -62,13 +64,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r '.tool_input.command'); { echo \"$cmd\" | grep -qiE '\\bgit( +[^ ]+)* +commit\\b' && echo \"$cmd\" | grep -qiE 'co-authored-by:|generated with|noreply@anthropic|🤖' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commit message contains a vanity trailer/header (Co-Authored-By, Generated with, or robot emoji). Per ~/.claude/CLAUDE.md: no vanity tags/trailers/headers. Remove it and retry.\"}}'; } || true",
+            "command": "cmd=$(jq -r '.tool_input.command'); { echo \"$cmd\" | grep -qiE '\\bgit( +[^ ]+)* +commit\\b' && echo \"$cmd\" | grep -qiE 'claude-session:|co-authored-by:|generated with|noreply@anthropic|🤖' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commit message contains a vanity trailer/header (Co-Authored-By, Generated with, or robot emoji). Per ~/.claude/CLAUDE.md: no vanity tags/trailers/headers. Remove it and retry.\"}}'; } || true",
             "statusMessage": "Checking commit for vanity trailers"
           },
           {
             "type": "command",
-            "command": "jq -r '.tool_input.command' | { grep -qiE '\\bgit( +[^ ]+)* +(commit|push)\\b' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"State-changing git command detected in the command string (commit/push/pull/merge/rebase/reset/restore/checkout/switch/clean). Prefix-based ask rules miss compound or cd-led commands — confirm before running.\"}}'; } || true",
-            "statusMessage": "Checking for global state-changing git commands"
+            "command": "bash \"$HOME/.claude/hooks/git-guard.sh\"",
+            "statusMessage": "Governing git commit/reset/rebase/push"
+          }
+        ]
+      },
+      {
+        "matcher": "PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/no-vcs-powershell.sh\"",
+            "statusMessage": "Blocking git/gh/glab in PowerShell"
           }
         ]
       }
@@ -77,6 +89,7 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
   },
+  "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": false,
   "theme": "auto",
