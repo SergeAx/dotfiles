@@ -62,4 +62,8 @@ Unless explicitly override by target repo rules:
 - Use `gh` and `glab` to access repositories, issues, pull/merge requests,
   commentaries, CI pipeline logs etc. Prefer specific CLI commands instead
   of generic calls like `glab api "..."`
-- Use `rg` instead of internal Find tool
+- Prefer `rg` over internal Find tool. Differences from `grep`:
+   * `-r` switch means "replace" in `rg`. Just `rg "pattern"` for recursive
+   * `rg` ignores hidden/gitignored files. Use `-u` to disable
+   * `rg` shows line numbers by default. `-N` to disable
+- use `uv` for everything Python-related
