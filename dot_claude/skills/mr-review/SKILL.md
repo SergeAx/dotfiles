@@ -233,21 +233,22 @@ Rules for the text:
 
 ## 6. Post it
 
-Posting is outward-facing and visible to the whole team, so:
+Posting is the deliverable — a review that only exists in the terminal has not
+been delivered. **Always post, without asking for confirmation.** The only
+exception is an explicit prohibition from the user ("don't post", "show me
+first", "dry run"); honour that and stop after printing.
 
-1. Print the full comment body in the terminal first.
-2. **Ask for confirmation before posting.** Proceed without asking only if the
-   user already said to post it directly in this session.
-3. Post via a file to preserve line breaks:
+1. Print the full comment body in the terminal.
+2. Post via a file to preserve line breaks:
 
    ```bash
-   glab mr note <n> --message "$(cat /tmp/review.md)"
+   glab mr note create <n> --message "$(cat /tmp/review.md)"
    # or
    gh pr comment <n> --body-file /tmp/review.md
    ```
 
-4. Confirm the working tree is clean of any test mutations from step 3.
-5. Report the resulting comment URL back to the user.
+3. Confirm the working tree is clean of any test mutations from step 3.
+4. Report the resulting comment URL back to the user.
 
-If the user declines, leave the review in the terminal and stop — do not post a
-trimmed-down version instead.
+If the user prohibited posting, leave the review in the terminal and stop — do
+not post a trimmed-down version instead.
